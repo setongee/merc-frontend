@@ -1,0 +1,118 @@
+.products{
+
+    margin-top: 45px;
+    display: flex;
+    flex-wrap: wrap;
+
+    .product{
+
+        width: 295px;
+        margin-right: 25px;
+        margin-bottom: 50px;
+        position: relative;
+
+        .photo_container{
+            height: 350px;
+            background-color: #eee;
+            overflow: hidden;
+
+            img{
+                width: 100%;
+            }
+        }
+
+        .content_net{
+            padding: 0px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .title{
+                font-size: 14px;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+
+            p{
+                margin: 25px 0 15px 0;
+                font-size: 12px;
+                display: none;
+                text-transform: uppercase;
+                color: #999;
+                font-weight: bold;
+            }
+
+            .sizes{
+
+                display: flex;
+                font-size: 13px;
+                margin-bottom: 0px;
+                align-items: center;
+
+                .size{
+                    margin-right: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                    color: #777;
+                    border-right: 1px solid rgb(174, 174, 174);
+                    padding-right: 15px;
+
+                    &:last-child{
+                        border: none;
+                        padding-right: 0;
+                        margin-right: 0;
+                    }
+                }
+
+            }
+        }
+
+        .price{
+            font-size: 15px;
+            font-weight: bold;
+            margin-top: 10px;
+            font-family: sans-serif;
+        }
+
+    }
+}
+
+textarea{
+
+    resize: none;
+    border: none;
+    background-color: #f9f9f9;
+    font-family: 'Questrial', sans-serif;
+    padding: 15px;
+    font-size: 12px;
+    font-weight: 800;
+    color: #000;
+    outline: none;
+    margin-bottom: 10px;
+
+}
+
+.sizes-mx{
+    display: flex;
+
+    .size-des{
+        display: flex;
+        font-size: 13px;
+        font-weight: bold;
+        margin-right: 20px;
+
+        p{
+            margin-right: 5px;
+        }
+    }
+}
+
+.deleteIcon{
+    color: crimson;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}

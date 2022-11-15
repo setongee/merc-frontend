@@ -1,0 +1,26 @@
+.sidebar{
+
+    background-color: #fff;
+    width: 90px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    z-index: 8;
+
+    .links{
+        padding-top: 114px;
+
+        .link{
+            margin-bottom: 50px;
+            color: #999;
+            cursor: pointer;
+
+            &.active{
+                color: #000;
+            }
+        }
+    }
+
+}

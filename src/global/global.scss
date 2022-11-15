@@ -1,0 +1,27 @@
+flex-xy{
+    display: flex;
+}
+
+flex-c{
+    flex-direction: column;
+}
+
+flex-r{
+    flex-direction: row;
+}
+
+flex-wrap{
+    flex-wrap: wrap;
+}
+
+center-x{
+    align-items: center;
+}
+
+center-y{
+    justify-content: center;
+}
+
+body{
+    background-color: #f9f9f9;
+}
