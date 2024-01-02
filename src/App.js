@@ -16,7 +16,6 @@ function App() {
 
       <Header/>
       <Sidebar/>
-      
       <RouterClass/>
     
     </div>

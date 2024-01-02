@@ -11,7 +11,7 @@ const CategoryItem = ({data, deleteFunction, openEdit}) => {
 
     const [products, setProducts] = useState(0);
 
-    const base_url = "https://stingray-app-69wlp.ondigitalocean.app"
+    const base_url = "https://walrus-app-fbyvn.ondigitalocean.app"
 
     let navigate = useNavigate();
 

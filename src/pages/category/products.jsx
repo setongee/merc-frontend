@@ -7,11 +7,13 @@ import ProductItem from './productItem';
 import Loaders from '../../components/loaders';
 import CategoryEmpty from './categoryEmpty';
 import AddProduct from './addProducts';
+import EditProduct from './editProducts';
+import EditProducts from './updateProduct';
 
 
 const Products = () => {
 
-    const base_url = "https://stingray-app-69wlp.ondigitalocean.app"
+    const base_url = "https://walrus-app-fbyvn.ondigitalocean.app"
 
     const [ProductData, setProductData] = useState([]);
     const [dispalyName, setDisplayName] = useState("Category");
@@ -22,8 +24,6 @@ const Products = () => {
     const [id_edit, setIdEdit] = useState(null);
     
     let params = useParams()
-
-    console.log(params);
 
     
     const deleteProduct = (id) => {
@@ -47,6 +47,13 @@ const Products = () => {
         }
     
     }
+
+    const openEditProductModal = (index) => {
+
+        setEditProduct(true);
+        
+
+    }
     
     const handleAddProduct = (categoryData) => {
     
@@ -63,9 +70,11 @@ const Products = () => {
     
     }
     
-    const handleEditProduct = (categoryData) => {
+    const handleEditProduct = (productData, puid) => {
+
+        
     
-        axios.post(`${base_url}/api/v1/category/${id_edit}/update`, categoryData)
+        axios.post(`${base_url}/api/v1/${params.id}/product/${puid}/update`, productData)
         .then( e => {
             setMonitorActions(e.data.message);
             setTimeout(() => {
@@ -136,7 +145,7 @@ const Products = () => {
                 {
                     ProductData.length ? ProductData.map((res, index) => {
 
-                        return <ProductItem key = {index} res = {res.data} uid = {res.uid} deleteProduct = {deleteProduct} />   
+                        return <ProductItem key = {index} index = {index} res = {res.data} uid = {res.uid} deleteProduct = {deleteProduct} cat = {params.id} />   
 
                     }) : <CategoryEmpty type = 'products' />
                 }             
@@ -146,6 +155,8 @@ const Products = () => {
             {
                 addProduct ? <AddProduct closeModal = {closeModalProduct} createProduct = {handleAddProduct} category = {dispalyName} /> : null
             }
+
+           
 
         </div>
     );

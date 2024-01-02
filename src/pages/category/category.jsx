@@ -19,7 +19,7 @@ const Category = () => {
     const [editCart, setEditCart] = useState(false);
     const [id_edit, setIdEdit] = useState(null);
 
-    const base_url = "https://stingray-app-69wlp.ondigitalocean.app"
+    const base_url = "https://walrus-app-fbyvn.ondigitalocean.app"
 
     const deleteCategory = (id) => {
 

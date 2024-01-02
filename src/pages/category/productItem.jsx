@@ -1,14 +1,37 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import EditProducts from './updateProduct';
 
-const ProductItem = ({res, uid, deleteProduct }) => {
+const ProductItem = ({res, uid, deleteProduct, editProduct, openEdit, cat }) => {
+
+    const [ edit, setEdit ] = useState(false);
+
+    const handleModalOpen = () => {
+
+        setEdit(true);
+
+    }
+
+    const handleModalClose = () => {
+
+        setEdit(false);
+
+    }
+
+
 
     return (
         
         <div className="product">
 
+            {
+                edit ? <EditProducts dataProduct =  { res } puid = {uid} closeMod = {handleModalClose} cat = {cat} /> : null
+            }
+
             <div className="deleteIcon" onClick={() => deleteProduct(uid) }>
                 <i className="fi fi-rr-trash"></i>
             </div>
+
+            <div className="hov" onClick={ () =>  handleModalOpen() } >Edit</div>
 
             <div className="photo_container">
                 <img src={res.photo} alt="product image" />

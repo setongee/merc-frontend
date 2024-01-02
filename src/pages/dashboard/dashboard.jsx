@@ -1,14 +1,49 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './dashboard.scss'
 import {ReactComponent as Chart} from '../../assets/svg/chart.svg';
 import {ReactComponent as ChartW} from '../../assets/svg/chart_white.svg';
 import Orders from '../../components/orders/orders';
+import axios from 'axios';
+import loader from '../../assets/gif/loadingMerc.gif'
 
 const Dashboard = () => {
+
+    const base_url = "https://walrus-app-fbyvn.ondigitalocean.app"
+
+    const [ordersAmount, setOrdersAmount] = useState(0);
+    const [orders, setOrders] = useState([]);
+    const [products, setProducts] = useState(0)
+    const [load, setLoad] = useState(true)
+
+
+    useEffect(() => {
+
+        const getOrders = async () => {
+
+            const ordersData = await axios.get(`${base_url}/api/v1/orders`);
+            const pi = ordersData.data.reduce( (a,b) => a+b );
+            setOrdersAmount(pi);
+
+            const ordersRes = await axios.get(`${base_url}/api/v1/orders/get`);
+            setOrders(ordersRes.data);
+
+            const getProducts = await axios.get(`${base_url}/api/v1/products`);
+            setProducts(getProducts.data.data.length)
+
+        }
+
+        getOrders().then( () => setLoad(false) )
+
+    }, []);
+
 
     return (
 
         <div className="dashboard">
+
+            {
+                load ? <div className="loader"> <div className="imgArea"> <img src={loader} alt="loader" /> </div> </div> : null
+            }
 
             <div className="page_title">Dashboard</div>
 
@@ -32,7 +67,7 @@ const Dashboard = () => {
                     </div>
 
                     <div className="card_title">Total Payments</div>
-                    <div className="value">N3,450,500</div>
+                    <div className="value">N{ordersAmount.toLocaleString()}</div>
 
                     <div className="lineThru"></div>
 
@@ -58,7 +93,7 @@ const Dashboard = () => {
                     </div>
 
                     <div className="card_title">Total Orders</div>
-                    <div className="value">109</div>
+                    <div className="value">{orders.length}</div>
 
                     <div className="lineThru"></div>
 
@@ -84,7 +119,7 @@ const Dashboard = () => {
                     </div>
 
                     <div className="card_title">Total Products</div>
-                    <div className="value">228</div>
+                    <div className="value">{products}</div>
 
                     <div className="lineThru"></div>
 
@@ -92,7 +127,7 @@ const Dashboard = () => {
 
                 </div>
 
-                <div className="card">
+                {/* <div className="card">
 
                     <div className="icons">
 
@@ -116,11 +151,13 @@ const Dashboard = () => {
 
                     <div className="date">Active Users : <span>2,450</span></div>
 
-                </div>
+                </div> */}
 
             </div>
 
-            <Orders />
+            {
+                orders.length ? <Orders orders = {orders} /> : null
+            }
             
         </div>
 

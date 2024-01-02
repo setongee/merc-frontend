@@ -4,12 +4,16 @@ import axios from 'axios';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from '../../api/firebase/config';
 
-const EditCategory = ({editCategoryDetails, closeModal, editID}) => {
+const EditProduct = ( { editCategoryDetails, closeModal, editID } ) => {
 
     const [ data, setData ] = useState({
 
-        displayName : null,
-        photo : null
+        productName : "",
+        sizes : [],
+        date_created : "",
+        description : "",
+        price : 9999,
+        photo : ''
 
     });
 
@@ -165,5 +169,5 @@ const EditCategory = ({editCategoryDetails, closeModal, editID}) => {
     );
 }
 
-export default EditCategory;
+export default EditProduct;
 
