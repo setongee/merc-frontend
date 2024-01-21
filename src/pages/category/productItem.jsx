@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import EditProducts from './updateProduct';
 
-const ProductItem = ({res, uid, deleteProduct, editProduct, openEdit, cat }) => {
+const ProductItem = ({res, uid, deleteProduct, editProduct, openEdit, cat, monitorMe, monitor }) => {
 
     const [ edit, setEdit ] = useState(false);
 
@@ -17,6 +17,12 @@ const ProductItem = ({res, uid, deleteProduct, editProduct, openEdit, cat }) => 
 
     }
 
+    useEffect(() => {
+
+        monitorMe(!monitor)
+
+    }, [edit]);
+
 
 
     return (
@@ -31,7 +37,7 @@ const ProductItem = ({res, uid, deleteProduct, editProduct, openEdit, cat }) => 
                 <i className="fi fi-rr-trash"></i>
             </div>
 
-            <div className="hov" onClick={ () =>  handleModalOpen() } >Edit</div>
+            <div className="hov edita" onClick={ () =>  handleModalOpen() } >Edit</div>
 
             <div className="photo_container">
                 <img src={res.photo} alt="product image" />

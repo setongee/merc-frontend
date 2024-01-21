@@ -12,22 +12,20 @@ const EditProducts = ({createProduct, closeModal, category, dataProduct, puid, c
     const [ sizes, setSizes ] = useState([])
     const [url, setUrl] = useState(dataProduct.photo);
 
-    console.log(data)
 
     const [monitor, setMonitor] = useState("");
 
     useEffect(() => {
         
-        console.log("reloaded");
 
     }, [monitor]);
 
-    console.log(puid)
 
     const base_url = "https://walrus-app-fbyvn.ondigitalocean.app"
+    //const base_url = "http://localhost:3300"
 
 
-    const handleEditProduct = (e, data) => {
+    const handleEditProduct = (e) => {
 
         e.preventDefault();
 
@@ -35,19 +33,18 @@ const EditProducts = ({createProduct, closeModal, category, dataProduct, puid, c
         const buttonSubmit2 = document.getElementById('buttonSubmitCat');
         buttonSubmit2.style.display = 'none';
         buttonSubmit.style.display = 'flex';
-
-        console.log("hey babe")
-        
     
         axios.post(`${base_url}/api/v1/${cat}/product/${puid}/update`, data)
         .then( e => {
-            console.log(e)
-            // setTimeout(() => {
-                
-            //     console.log("checked...")
-                
-            // }, 1000);
+
+            if ( e.data.status ) {
+
+                closeMod();
+
+            }
+
         } )
+
         .catch((e) => console.log(e));
 
         
@@ -89,8 +86,6 @@ const EditProducts = ({createProduct, closeModal, category, dataProduct, puid, c
         const targetPin = e.target;
 
         if(!targetPin.checked){
-
-            console.log(e.target.value);
 
            const filter = sizes.filter( data => {
          
@@ -187,7 +182,7 @@ const EditProducts = ({createProduct, closeModal, category, dataProduct, puid, c
             
             <div className="form_container addProductForm">
 
-                <div className="p"> <strong>Add Product</strong> </div>
+                <div className="p"> <strong>Update Product</strong> </div>
 
                 <form id='login_form' className='addProductForm'>
 
@@ -281,7 +276,7 @@ const EditProducts = ({createProduct, closeModal, category, dataProduct, puid, c
                         
                             <div className="justSubmit">
 
-                                <lottie-player src="https://lottie.host/4bc258ff-6c53-4747-8bea-9f6afb6f8398/il76DAuXwT.json" background="transparent" speed="1" style={{ width : '200px', height : '200px'}} loop autoplay></lottie-player>
+                               
 
                             </div>
                             

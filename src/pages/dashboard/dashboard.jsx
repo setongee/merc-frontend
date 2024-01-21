@@ -5,10 +5,13 @@ import {ReactComponent as ChartW} from '../../assets/svg/chart_white.svg';
 import Orders from '../../components/orders/orders';
 import axios from 'axios';
 import loader from '../../assets/gif/loadingMerc.gif'
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
 
     const base_url = "https://walrus-app-fbyvn.ondigitalocean.app"
+
+    const navigate = useNavigate();
 
     const [ordersAmount, setOrdersAmount] = useState(0);
     const [orders, setOrders] = useState([]);
@@ -21,11 +24,15 @@ const Dashboard = () => {
         const getOrders = async () => {
 
             const ordersData = await axios.get(`${base_url}/api/v1/orders`);
-            const pi = ordersData.data.reduce( (a,b) => a+b );
-            setOrdersAmount(pi);
+            if(ordersData.data.length) {
+                const pi = ordersData.data.reduce( (a,b) => a+b );
+                setOrdersAmount(pi);
+            }
 
             const ordersRes = await axios.get(`${base_url}/api/v1/orders/get`);
-            setOrders(ordersRes.data);
+            if(ordersRes.data.length) {
+                setOrders(ordersRes.data);
+            }
 
             const getProducts = await axios.get(`${base_url}/api/v1/products`);
             setProducts(getProducts.data.data.length)
@@ -71,7 +78,7 @@ const Dashboard = () => {
 
                     <div className="lineThru"></div>
 
-                    <div className="date">Start from <span>1 Jan 2023</span></div>
+                    <div className="date">Start from <span>1 Jan 2024</span></div>
 
                 </div>
 
@@ -123,7 +130,7 @@ const Dashboard = () => {
 
                     <div className="lineThru"></div>
 
-                    <div className="date"><span> + Add New Product</span></div>
+                    <div className="date" onClick={ () => navigate('/category') } ><span> + Add New Product</span></div>
 
                 </div>
 

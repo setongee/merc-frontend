@@ -20,6 +20,7 @@ const Category = () => {
     const [id_edit, setIdEdit] = useState(null);
 
     const base_url = "https://walrus-app-fbyvn.ondigitalocean.app"
+    //const base_url = "http://localhost:3300"
 
     const deleteCategory = (id) => {
 

@@ -18,7 +18,7 @@ const Products = () => {
     const [ProductData, setProductData] = useState([]);
     const [dispalyName, setDisplayName] = useState("Category");
     const [loading, setloading] = useState(true);
-    const [monitorActions, setMonitorActions] = useState("");
+    const [monitorActions, setMonitorActions] = useState(false);
     const [addProduct, setAddProduct] = useState(false);
     const [editProduct, setEditProduct] = useState(false);
     const [id_edit, setIdEdit] = useState(null);
@@ -90,7 +90,7 @@ const Products = () => {
     const closeModalProduct = () => {
     
         setAddProduct(false);
-        setEditProduct(false)
+        setEditProduct(false);
     
     }
     
@@ -98,6 +98,13 @@ const Products = () => {
     
         setEditProduct(true);
         setIdEdit(id)
+    
+    
+    }
+
+    const monitorMe = (msg) => {
+    
+        setMonitorActions(msg)
     
     
     }
@@ -145,7 +152,7 @@ const Products = () => {
                 {
                     ProductData.length ? ProductData.map((res, index) => {
 
-                        return <ProductItem key = {index} index = {index} res = {res.data} uid = {res.uid} deleteProduct = {deleteProduct} cat = {params.id} />   
+                        return <ProductItem key = {index} index = {index} res = {res.data} uid = {res.uid} deleteProduct = {deleteProduct} cat = {params.id} monitorMe = {monitorMe} monitor = {monitorActions} />   
 
                     }) : <CategoryEmpty type = 'products' />
                 }             
