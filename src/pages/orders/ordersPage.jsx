@@ -19,8 +19,10 @@ const OrdersPage = () => {
         const getOrders = async () => {
 
             const ordersData = await axios.get(`${base_url}/api/v1/orders`);
-            const pi = ordersData.data.reduce( (a,b) => a+b );
-            setOrdersAmount(pi);
+            if(ordersData.data.length) {
+                const pi = ordersData.data.reduce( (a,b) => a+b );
+                setOrdersAmount(pi);
+            }
 
             const ordersRes = await axios.get(`${base_url}/api/v1/orders/get`);
             setOrders(ordersRes.data);
