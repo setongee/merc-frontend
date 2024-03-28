@@ -8,7 +8,6 @@ const AddCategory = ({createCategoryFunc, closeModal}) => {
 
     const [ data, setData ] = useState({
 
-        categoryName : "",
         displayName : "",
         photo : "",
         date_created : ""
@@ -55,7 +54,11 @@ const AddCategory = ({createCategoryFunc, closeModal}) => {
 
     const uploading = async () => {
 
-        const storageRef = ref( storage, `categories / ${data.categoryName.toLowerCase()} / merccreator_category_${fileMngt.name.toLowerCase()}` );
+        const refixedCategoryName = data.displayName.replaceAll(' ', '_').toLowerCase();
+
+        console.log(refixedCategoryName);
+
+        const storageRef = ref( storage, `categories / ${refixedCategoryName} / merccreator_category_${fileMngt.name.toLowerCase()}` );
     
             //uploading to firebase begins
             await uploadBytes(storageRef, fileMngt)
@@ -64,7 +67,7 @@ const AddCategory = ({createCategoryFunc, closeModal}) => {
                 await getDownloadURL(storageRef)
                 .then( url => {
 
-                        createCategoryFunc( {...data, photo : url, categoryName : data.categoryName.replaceAll(' ', '_').toLowerCase() } )
+                        createCategoryFunc( {...data, photo : url, categoryName : refixedCategoryName } )
 
                     } )
                 
@@ -74,8 +77,18 @@ const AddCategory = ({createCategoryFunc, closeModal}) => {
 
     const handleSubmit = (e) => {
 
-        if ( data.categoryName !== "" && data.displayName !== "" && fileMngt !== null ) {
-            
+        uploading();
+
+        if (data.displayName === "") {
+
+            alert("Display Name is required!");
+
+        } else if (fileMngt === null){
+
+            alert("Adding a photo is required!")
+
+        } else {
+
             uploading();
 
             const buttonSubmit = document.getElementById('buttonSubmit');
@@ -83,7 +96,7 @@ const AddCategory = ({createCategoryFunc, closeModal}) => {
             buttonSubmit2.style.display = 'none';
             buttonSubmit.style.display = 'flex';
 
-        }    
+        }        
 
     }
 
@@ -119,14 +132,7 @@ const AddCategory = ({createCategoryFunc, closeModal}) => {
 
                     <div className="formControl">
 
-                        <label> <i className="fi fi-rr-shopping-bag"></i> Category Name</label>
-                        <input type="text" required placeholder='Enter Category Name' name = "categoryName" value={data.categoryName} onChange = {handleChange} />
-
-                    </div>
-
-                    <div className="formControl">
-
-                        <label> <i className="fi fi-rr-shopping-cart"></i> Display Name</label>
+                        <label> <i className="fi fi-rr-shopping-cart"></i> Category Name</label>
                         <input type="text" required placeholder='Enter what you want your customers to see' name = "displayName" value={data.displayName} onChange = {handleChange} />
 
                     </div>

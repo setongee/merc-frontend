@@ -23,8 +23,6 @@ const ProductItem = ({res, uid, deleteProduct, editProduct, openEdit, cat, monit
 
     }, [edit]);
 
-
-
     return (
         
         <div className="product">
@@ -37,10 +35,10 @@ const ProductItem = ({res, uid, deleteProduct, editProduct, openEdit, cat, monit
                 <i className="fi fi-rr-trash"></i>
             </div>
 
-            <div className="hov edita" onClick={ () =>  handleModalOpen() } >Edit</div>
+            {/* <div className="hov edita" onClick={ () =>  handleModalOpen() } >Edit</div> */}
 
-            <div className="photo_container">
-                <img src={res.photo} alt="product image" />
+            <div className="photo_container" onClick={ () =>  handleModalOpen() } >
+                <img src={res.photo[Object.keys(res.photo)[0]]} alt="product image" />
             </div>
 
             <div className="content_net">
@@ -51,11 +49,12 @@ const ProductItem = ({res, uid, deleteProduct, editProduct, openEdit, cat, monit
 
                     <p> Available Sizes</p>
 
-                    {
+                    {/* {
                         res.sizes.map( ( item, key ) => {
                             return <div className="size">{item.toUpperCase()}</div>
                         } )
-                    }
+                    } */}
+                    
                 </div>
 
             </div>

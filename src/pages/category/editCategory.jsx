@@ -4,12 +4,12 @@ import axios from 'axios';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from '../../api/firebase/config';
 
-const EditCategory = ({editCategoryDetails, closeModal, editID}) => {
+const EditCategory = ({editCategoryDetails, closeModal, editID, editData}) => {
 
     const [ data, setData ] = useState({
 
-        displayName : null,
-        photo : null
+        displayName : editData.displayName,
+        photo : editData.photo
 
     });
 
@@ -131,11 +131,11 @@ const EditCategory = ({editCategoryDetails, closeModal, editID}) => {
                     
                     <div className="formControl">
 
-                        <label> <i className="fi fi-rr-picture"></i> Cover Photo</label>
+                        <label> <i className="fi fi-rr-picture"></i> Change Cover Photo</label>
                         <input type="file" id = "categoryPhoto" required value= "" onChange = {(e) => handleFileChange(e)} accept = 'image/*' hidden/>
 
                        <div className="upload">
-                            <button onClick={addPhoto} >Choose Photo</button>
+                            <button onClick={addPhoto} >Choose File</button>
                             <p id = 'filename' >No Photo Chosen</p>
                        </div>
 

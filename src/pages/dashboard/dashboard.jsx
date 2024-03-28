@@ -6,10 +6,11 @@ import Orders from '../../components/orders/orders';
 import axios from 'axios';
 import loader from '../../assets/gif/loadingMerc.gif'
 import { useNavigate } from 'react-router-dom';
+import { serverlog } from '../../serverlog';
 
 const Dashboard = () => {
 
-    const base_url = "https://walrus-app-fbyvn.ondigitalocean.app"
+    const base_url = serverlog.baseUrl
 
     const navigate = useNavigate();
 
@@ -65,7 +66,7 @@ const Dashboard = () => {
                         <div className="chart_icon">
 
                             <svg xmlns="http://www.w3.org/2000/svg" width="29.47" height="19.757" viewBox="0 0 29.47 19.757">
-                            <path id="Path_6792" data-name="Path 6792" d="M-6949.564,4765.537l7.228-8.779,6,1.594,3.931-6.221,8.342-2.384" transform="translate(6951.675 -4747.892)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="3"/>
+                            <path id="Path_6792" data-name="Path 6792" d="M-6949.564,4765.537l7.228-8.779,6,1.594,3.931-6.221,8.342-2.384" transform="translate(6951.675 -4747.892)" fill="none" stroke="#fff" strokeLinecap="round" strokeWidth="3"/>
                             </svg>
 
 
@@ -91,7 +92,7 @@ const Dashboard = () => {
                         <div className="chart_icon">
 
                             <svg xmlns="http://www.w3.org/2000/svg" width="29.47" height="19.757" viewBox="0 0 29.47 19.757">
-                            <path id="Path_6792" data-name="Path 6792" d="M-6949.564,4765.537l7.228-8.779,6,1.594,3.931-6.221,8.342-2.384" transform="translate(6951.675 -4747.892)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="3"/>
+                            <path id="Path_6792" data-name="Path 6792" d="M-6949.564,4765.537l7.228-8.779,6,1.594,3.931-6.221,8.342-2.384" transform="translate(6951.675 -4747.892)" fill="none" stroke="#fff" strokeLinecap="round" strokeWidth="3"/>
                             </svg>
 
 
@@ -104,7 +105,7 @@ const Dashboard = () => {
 
                     <div className="lineThru"></div>
 
-                    <div className="date">Pending Orders : <span>24</span></div>
+                    <div className="date">Pending Orders : <span>0</span></div>
 
                 </div>
 
@@ -117,7 +118,7 @@ const Dashboard = () => {
                         <div className="chart_icon">
 
                             <svg xmlns="http://www.w3.org/2000/svg" width="29.47" height="19.757" viewBox="0 0 29.47 19.757">
-                            <path id="Path_6792" data-name="Path 6792" d="M-6949.564,4765.537l7.228-8.779,6,1.594,3.931-6.221,8.342-2.384" transform="translate(6951.675 -4747.892)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="3"/>
+                            <path id="Path_6792" data-name="Path 6792" d="M-6949.564,4765.537l7.228-8.779,6,1.594,3.931-6.221,8.342-2.384" transform="translate(6951.675 -4747.892)" fill="none" stroke="#fff" strokeLinecap="round" strokeWidth="3"/>
                             </svg>
 
 

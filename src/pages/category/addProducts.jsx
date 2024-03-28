@@ -9,28 +9,57 @@ const AddProduct = ({createProduct, closeModal, category}) => {
     const [ data, setData ] = useState({
 
         productName : "",
-        sizes : [],
+        sizes : {},
         date_created : "",
         description : "",
-        price : 9999,
-        photo : ''
+        price : 0,
+        photo : []
 
     });
 
-    const [ fileMngt, setFileMngt ] = useState(null)
-    const [ sizes, setSizes ] = useState([])
-    const [url, setUrl] = useState('https://firebasestorage.googleapis.com/v0/b/merchcreations-15ff6.appspot.com/o/general%2F57893-min.jpg?alt=media&token=28284e4d-d070-4ac2-8e31-e19a38d0b010');
-    
+    const [ fileMngt, setFileMngt ] = useState({})
+    const [ sizes, setSizes ] = useState({size1 : ""});
+    const [urls, setUrls] = useState({});
+    const [loader, setLoader] = useState(false);
+
+
+    //console.log(urls)
+
 
     const handleFileChange = (e) => {
 
         const File = e.target.files[0];
-        setFileMngt(File);
+        //setFileMngt(File);
 
-        const element = document.getElementById('filename');
-        element.textContent = File.name;
+        //const element = document.getElementById('filename');
+        //element.textContent = File.name;
 
-        setUrl(URL.createObjectURL(File))
+        const keyNum = Math.floor(Math.random() * 999) + 1;
+
+        if (urls[keyNum] === undefined) {
+
+            setUrls( () => {
+
+                return {
+     
+                 ...urls, 
+                 [`photo${keyNum}`] : {
+                    view : URL.createObjectURL(File),
+                    raw : File
+                 }
+     
+                }
+     
+             } )
+        }
+
+    }
+
+    const addPhoto = e => {
+
+        e.preventDefault();
+        const element = document.getElementById('productPhotos');
+        element.click();
 
     }
 
@@ -51,64 +80,126 @@ const AddProduct = ({createProduct, closeModal, category}) => {
 
     })
 
-    const handleSizeAdd = (e) => {
 
-        const targetPin = e.target;
+    const handleTheSizeAdding = () => {
+        
+        const mix = Math.floor(Math.random() * 999) + 1;
 
-        if(!targetPin.checked){
+        if (sizes[mix] === undefined) {
 
-            console.log(e.target.value);
+            setSizes(() => {
 
-           const filter = sizes.filter( data => {
-         
-            return data !== e.target.value
+                return {
+    
+                    ...sizes, [`sizes${mix}`] : ""
+                    
+    
+                }
+                
+            });
 
-           } );
-
-           setSizes(filter);
-
-        } else {
-
-            sizes.push(e.target.value);
-            
         }
 
     }
 
-    const addPhoto = e => {
 
-        e.preventDefault();
-        const element = document.getElementById('categoryPhoto');
-        element.click();
+    const handleSizeChange = e => {
+
+        const {name, value} = e.target
+
+        setSizes( size => {
+
+            return {
+
+                ...size,
+                [name] : value
+
+            }
+
+        } )
+
 
     }
 
+    const handleDeleteSize = (key) => {
+
+        delete sizes[key];
+
+        setSizes(() => {
+
+            return {
+
+                ...sizes
+    
+            }
+        });
+
+    }
+
+    const handleDeletePhoto = (key) => {
+
+        delete urls[key];
+
+        setUrls(() => {
+
+            return {
+
+                ...urls
+    
+            }
+        });
+
+    };    
+
     const uploading = async () => {
 
-        const storageRef = ref( storage, `categories / ${category.toLowerCase()} / merccreator_product_${fileMngt.name.toLowerCase()}` );
+        const photoUpload = {};
+
+        const fileUrl = Object.entries(urls);
+
+        if (fileUrl.length) {
+            
+            for( let x = 0; x < fileUrl.length; x++ ) {
+
+                const keyNum = Math.floor(Math.random() * 999999999999 * (x+1)) + 1;
     
-            //uploading to firebase begins
-            await uploadBytes(storageRef, fileMngt)
-            .then( async () => {
-                
-                await getDownloadURL(storageRef)
-                .then( url => {
+                const storageRef = ref( storage, `photos / products / merc_creator_product_${keyNum}` );
+        
+                //uploading to firebase begins
+                await uploadBytes(storageRef, fileUrl[x][1].raw)
+                .then( async () => {
+                    
+                    await getDownloadURL(storageRef)
+                    .then( url => {
+    
+                            photoUpload[keyNum] = url;
+    
+                        } )
+                    
+                });   
+    
+            }
+        }
 
-                        createProduct( {...data, photo : url } );
-
-                    } )
-                
-            });       
+       return photoUpload;
 
     }
 
     const handleSubmit = (e) => {
 
+        setLoader(true);
+        
         data.sizes = sizes;
 
-        if ( data.ProductName !== "" && data.displayName !== "" && fileMngt !== null, data.sizes.length !== 0 ) {
+        if ( data.productName !== "" && urls !== null, data.sizes.length !== 0 ) {
             
-            uploading();
+            uploading().then( e => {
+                
+                createProduct( { ...data, photo : e } );
+                setLoader(false);
+                handleModalBodyClose();
+
+            })
 
             const buttonSubmit = document.getElementById('buttonSubmit');
             const buttonSubmit2 = document.getElementById('buttonSubmitCat');
@@ -135,13 +226,16 @@ const AddProduct = ({createProduct, closeModal, category}) => {
     
         })
 
-        setFileMngt(null)
+        setSizes({});
+
 
     }
 
+    //UseEffect of the lifecycle
+
     useEffect(() => {
 
-    }, [url]);
+    }, []);
 
 
     return (
@@ -154,7 +248,15 @@ const AddProduct = ({createProduct, closeModal, category}) => {
 
                 <div className="p"> <strong>Add Product</strong> </div>
 
-                <form id='login_form' className='addProductForm'>
+                {/* <div className="headerAdding">
+
+                    <p>Add A Product</p>
+
+                    <button className='BUTTON_submit' onClick={handleSubmit} id='buttonSubmitCat' > + Add Product</button>
+
+                </div> */}
+
+                <div id='login_form' className='allForm addProductForm'>
 
                     {/* //distribute System 1 */}
 
@@ -162,21 +264,21 @@ const AddProduct = ({createProduct, closeModal, category}) => {
 
                         <div className="formControl">
 
-                            <label> <i className="fi fi-rr-shopping-bag"></i> Product Name</label>
+                            <label> Product Name</label>
                             <input type="text" required placeholder='Enter Product Name' name = "ProductName" value={data.ProductName} onChange = {handleChange} />
 
                         </div>
 
                         <div className="formControl">
 
-                            <label> <i className="fi fi-rr-text"></i> Product Description</label>
+                            <label> Product Description</label>
                             <textarea  cols="30" rows="4" required placeholder='Enter product desription' name = "description" value={data.description} onChange = {handleChange} ></textarea>
 
                         </div>
 
                         <div className="formControl">
 
-                            <label> <i className="fi fi-rr-dollar"></i> Product Price</label>
+                            <label> Product Price</label>
 
                             <input type="text" required placeholder='Enter Product Price' name = "price" value={data.price.toLocaleString()} onChange = {handleChange} />
 
@@ -184,41 +286,31 @@ const AddProduct = ({createProduct, closeModal, category}) => {
 
                         <div className="formControl">
 
-                            <label> <i className="fi fi-rr-scale"></i> Available Sizes </label>
+                            <label> Available Sizes </label>
                             
-                            <div className="sizes-mx">
+                            <div className="sizesPanel">
 
-                                <div className="size-des">
-                                    
-                                    <p>S</p>
+                                <div className="sizeFillArea">
 
-                                    <input type= 'checkbox' name = "sizes" value= "s" onChange = {(e) => handleSizeAdd(e)} />
+                                    {
+                                        Object.keys(sizes).length ? Object.entries(sizes).map( (res, index) => {
 
-                                </div>
+                                            return <div key = {index} className="sizeInput">
 
-                                <div className="size-des">
-                                    
-                                    <p>M</p>
+                                                <input type="text" placeholder={`Enter Size`} name = {res[0]} value = {res[1]} onChange={handleSizeChange} />
 
-                                    <input type= 'checkbox' required name = "sizes" value= "m" onChange = {(e) => handleSizeAdd(e)} />
+                                                {
+                                                    index !== 0 ? <div className="rm_input" onClick={ () => handleDeleteSize(res[0]) } > x </div> : <div className="rm_input" > </div> 
+                                                }
 
-                                </div>
+                                            </div>
 
-                                <div className="size-des">
-                                    
-                                    <p>L</p>
-
-                                    <input type= 'checkbox' name = "sizes" value= "l" onChange = {(e) => handleSizeAdd(e)} />
+                                        } ) : null
+                                    }
 
                                 </div>
 
-                                <div className="size-des">
-                                    
-                                    <p>XL</p>
-
-                                    <input type= 'checkbox' name = "sizes" value= "xl" onChange = {(e) => handleSizeAdd(e)} />
-
-                                </div>
+                                <div className="sizesButton" onClick = { () => handleTheSizeAdding() }  > Add Size </div>
 
                             </div>
 
@@ -234,19 +326,50 @@ const AddProduct = ({createProduct, closeModal, category}) => {
                         
                         <div className="formControl">
 
-                            <div className="previewImageXY">
-                                <img src={url} alt={url} />
+                            <label className='restP'> Product Photos</label>
+
+                            <div className="productPhotoBooth">
+
+                                {
+                                    Object.keys(urls).length ? Object.entries(urls).map( (url, index) => {
+
+                                        return (
+                                        
+                                        <div className="photoItem" key = {index}>
+
+                                            <div className="photoSrc" name = {url[0]} > 
+
+                                                <img src={url[1].view} alt="product photos" /> 
+                                                <div className="rm_photo" onClick={ () => handleDeletePhoto(url[0]) } > x </div>
+
+                                            </div>
+                                                
+                                        </div>
+                                        
+                                        )
+
+                                    } ) : null
+                                }
+
+                                <div className="addPhoto" onClick={addPhoto}>+</div>
+
+                                <input type="file" id = "productPhotos" required value= "" onChange = {(e) => handleFileChange(e)} accept = 'image/*' hidden/>
+
                             </div>
 
-                            <label> <i className="fi fi-rr-picture"></i> Product Image </label>
+                            {/* <div className="previewImageXY">
+
+                                <img src={url} alt={url} />
+
+                            </div>
+
                             <input type="file" id = "categoryPhoto" required value= "" onChange = {(e) => handleFileChange(e)} accept = 'image/*' hidden/>
 
                             <div className="upload">
 
-                                <button onClick={addPhoto}> Choose Photo </button>
-                                <p id = 'filename'> No Photo Chosen </p>
+                               lus Adding
 
-                            </div>
+                            </div> */}
 
                         </div>
 
@@ -268,7 +391,7 @@ const AddProduct = ({createProduct, closeModal, category}) => {
 
                      {/* //End distribute System 2 */}
 
-                </form> 
+                </div> 
 
             </div>
 

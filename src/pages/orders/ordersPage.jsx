@@ -4,10 +4,11 @@ import './ordersPage.scss'
 import '../dashboard/dashboard.scss'
 import axios from 'axios';
 import loader from  '../../assets/gif/loadingMerc.gif'
+import { serverlog } from '../../serverlog';
 
 const OrdersPage = () => {
 
-    const base_url = "https://walrus-app-fbyvn.ondigitalocean.app"
+    const base_url = serverlog.baseUrl
 
     const [ordersAmount, setOrdersAmount] = useState(0);
     const [orders, setOrders] = useState([]);

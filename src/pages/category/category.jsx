@@ -9,6 +9,7 @@ import Loaders from '../../components/loaders';
 import CategoryEmpty from './categoryEmpty';
 import AddCategory from './addCategory';
 import EditCategory from './editCategory';
+import { serverlog } from '../../serverlog';
 
 const Category = () => {
 
@@ -18,9 +19,9 @@ const Category = () => {
     const [addCart, setAddCart] = useState(false);
     const [editCart, setEditCart] = useState(false);
     const [id_edit, setIdEdit] = useState(null);
+    const [EditData, setEditData] = useState({});
 
-    const base_url = "https://walrus-app-fbyvn.ondigitalocean.app"
-    //const base_url = "http://localhost:3300"
+    const base_url = serverlog.baseUrl;
 
     const deleteCategory = (id) => {
 
@@ -80,10 +81,11 @@ const Category = () => {
 
     }
 
-    const openModalCategory = (id) => {
+    const openModalCategory = (id, res) => {
 
         setEditCart(true);
-        setIdEdit(id)
+        setIdEdit(id);
+        setEditData(res);
         console.log(id);
 
 
@@ -148,7 +150,7 @@ const Category = () => {
             }
 
             {
-                editCart ? <EditCategory closeModal = {closeModalCategory} editCategoryDetails = {handleEditCategory} /> : null
+                editCart ? <EditCategory closeModal = {closeModalCategory} editCategoryDetails = {handleEditCategory} editData = {EditData} /> : null
             }
 
         </div>

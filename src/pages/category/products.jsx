@@ -9,11 +9,13 @@ import CategoryEmpty from './categoryEmpty';
 import AddProduct from './addProducts';
 import EditProduct from './editProducts';
 import EditProducts from './updateProduct';
+import { serverlog } from '../../serverlog';
+import { useNavigate } from 'react-router-dom';
 
 
 const Products = () => {
 
-    const base_url = "https://walrus-app-fbyvn.ondigitalocean.app"
+    const base_url = serverlog.baseUrl
 
     const [ProductData, setProductData] = useState([]);
     const [dispalyName, setDisplayName] = useState("Category");
@@ -23,28 +25,24 @@ const Products = () => {
     const [editProduct, setEditProduct] = useState(false);
     const [id_edit, setIdEdit] = useState(null);
     
-    let params = useParams()
+    let params = useParams();
+    let navigate = useNavigate();
 
     
     const deleteProduct = (id) => {
 
-        const notify = window.confirm("Are you sure you want to delete this product?");
+        console.log(id)
 
-        if (notify) {
+        axios.post(`${base_url}/api/v1/category/product/delete`, 
+        {
+            category : params.id,
+            productId : id
+        })
+        .then( e => {
+            
+            setMonitorActions(!monitorActions);
 
-            setloading(true);
-
-            axios.post(`${base_url}/api/v1/category/product/delete`, 
-            {
-                category : params.id,
-                productId : id
-            })
-            .then( e => {
-                setMonitorActions(e.data.message);
-            } )
-            .catch(() => setloading(false));
-
-        }
+        } )
     
     }
 
@@ -111,6 +109,20 @@ const Products = () => {
 
     useEffect( () => {
 
+
+        const disp = params.id.split("_");
+        
+        const mapIn = disp.map(e=>{
+            let y = e.split("")[0].toUpperCase() + e.substring(1).toLowerCase();
+            return y;
+        })
+
+        let dispArr = mapIn.join(" ");
+
+
+        setDisplayName(dispArr);
+
+
         const getProducts = async () => {
 
             
@@ -121,7 +133,6 @@ const Products = () => {
                 if ( data.status === 200 ) {
                     setProductData(data.data.data)
                     setloading(false)
-                    setDisplayName(data.data.categoryName)
                 } 
                 
             } catch (error) {
@@ -139,13 +150,14 @@ const Products = () => {
 
 
     return (
+
         <div className="dashboard">
 
             {
                 loading ? <Loaders /> : null
             }
 
-            <div className="page_title cato"> {dispalyName} / Products  <div className="addCategory" onClick = {() => setAddProduct(true) } >Add Product</div>  </div>
+            <div className="page_title cato"> <div><span onClick={() => navigate('/category')}>{dispalyName}</span> / Products</div>  <div className="addCategory" onClick = {() => setAddProduct(true) } >Add Product</div>  </div>
 
             <div className="products">
                 
@@ -162,10 +174,9 @@ const Products = () => {
             {
                 addProduct ? <AddProduct closeModal = {closeModalProduct} createProduct = {handleAddProduct} category = {dispalyName} /> : null
             }
-
-           
-
+            
         </div>
+
     );
 }
 

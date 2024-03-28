@@ -4,6 +4,11 @@
     justify-content: space-between;
     margin-top: -9px;
 
+    span {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
     .addCategory{
         font-size: 13px;
         padding: 15px 15px;
@@ -16,21 +21,20 @@
 
 .categories{
 
-    margin-top: 33px;
+    margin-top: 30px;
     display: flex;
     flex-wrap: wrap;
+    height: max-content;
 
     .category{
-        height: 500px;
         background-color: #fff;
-        width: 300px;
+        width: 350px;
         position: relative;
         margin-right: 20px;
-        margin-bottom: 25px;
 
         .image_category{
 
-            height: 300px;
+            height: 200px;
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -50,28 +54,19 @@
                 background-color: rgba($color: #ffff, $alpha: .9);
                 position: absolute;
                 top: 0;
-                height: 300px;
-                width: 100%;
                 display: flex;
-                flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                font-size: 13px;
+                font-size: 14px;
                 font-weight: bold;
                 cursor: pointer;
-                display: none;
+                margin: 20px;
+                border-radius: 100px;
+                padding: 12px 15px;
+                gap: 10px;
     
                 .fi{
-                    font-size: 16px;
-                    width: 40px;
-                    height: 40px;
-                    background-color: #fff;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border-radius: 100%;
-                    padding: 20px;
-                    margin-bottom: 15px;
+                    font-size: 14px;
                 }
     
             }
@@ -82,10 +77,10 @@
 
             background-color: #fff;
             height: 150px;
-            padding: 30px 20px;
+            padding: 20px;
 
             .category_title{
-                font-size: 28px;
+                font-size: 24px;
                 font-weight: bold;
             }
 

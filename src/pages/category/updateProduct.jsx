@@ -3,66 +3,90 @@ import './addCategory.scss'
 import axios from 'axios';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from '../../api/firebase/config';
+import { serverlog } from '../../serverlog';
 
 const EditProducts = ({createProduct, closeModal, category, dataProduct, puid, cat, closeMod}) => {
 
     const [ data, setData ] = useState(dataProduct);
 
-    const [ fileMngt, setFileMngt ] = useState(null)
-    const [ sizes, setSizes ] = useState([])
-    const [url, setUrl] = useState(dataProduct.photo);
+    const [ fileMngt, setFileMngt ] = useState([])
+    const [ sizes, setSizes ] = useState({})
+    const [urls, setUrls] = useState({});
+    const [loader, setLoader] = useState(false);
 
 
     const [monitor, setMonitor] = useState("");
 
     useEffect(() => {
-        
 
-    }, [monitor]);
+        setSizes(data.sizes);
+        setUrls(data.photo);
 
-
-    const base_url = "https://walrus-app-fbyvn.ondigitalocean.app"
-    //const base_url = "http://localhost:3300"
-
-
-    const handleEditProduct = (e) => {
-
-        e.preventDefault();
-
-        const buttonSubmit = document.getElementById('buttonSubmit');
-        const buttonSubmit2 = document.getElementById('buttonSubmitCat');
-        buttonSubmit2.style.display = 'none';
-        buttonSubmit.style.display = 'flex';
+    }, []);
     
-        axios.post(`${base_url}/api/v1/${cat}/product/${puid}/update`, data)
-        .then( e => {
 
-            if ( e.data.status ) {
-
-                closeMod();
-
-            }
-
-        } )
-
-        .catch((e) => console.log(e));
-
-        
-    
-    }
-    
+    const base_url = serverlog.baseUrl;
 
     const handleFileChange = (e) => {
 
         const File = e.target.files[0];
-        setFileMngt(File);
 
-        const element = document.getElementById('filename');
-        element.textContent = File.name;
+        const keyNum = Math.floor(Math.random() * 999) + 1;
 
-        setUrl(URL.createObjectURL(File))
+        if (urls[keyNum] === undefined) {
+
+            setUrls( () => {
+
+                return {
+     
+                 ...urls, 
+                 [`photo${keyNum}`] : URL.createObjectURL(File)
+     
+                }
+     
+             } )
+     
+             fileMngt.push(File);
+        }
+
 
     }
+
+    const addPhoto = e => {
+
+        e.preventDefault();
+        const element = document.getElementById('productPhotos');
+        element.click();
+
+    }
+
+
+    const handleEditProduct = (e) => {
+
+        // e.preventDefault();
+
+        // const buttonSubmit = document.getElementById('buttonSubmit');
+        // const buttonSubmit2 = document.getElementById('buttonSubmitCat');
+        // buttonSubmit2.style.display = 'none';
+        // buttonSubmit.style.display = 'flex';
+    
+        // axios.post(`${base_url}/api/v1/${cat}/product/${puid}/update`, data)
+        // .then( e => {
+
+        //     if ( e.data.status ) {
+
+        //         closeMod();
+
+        //     }
+
+        // } )
+
+        // .catch((e) => console.log(e));
+
+        
+    
+    }
+    
 
    const handleChange = ((e) => {
 
@@ -81,77 +105,80 @@ const EditProducts = ({createProduct, closeModal, category, dataProduct, puid, c
 
     })
 
-    const handleSizeAdd = (e) => {
 
-        const targetPin = e.target;
+    const handleTheSizeAdding = () => {
+        
+        const mix = Math.floor(Math.random() * 999) + 1;
 
-        if(!targetPin.checked){
+        if (sizes[mix] === undefined) {
 
-           const filter = sizes.filter( data => {
-         
-            return data !== e.target.value
+            setSizes(() => {
 
-           } );
+                return {
+    
+                    ...sizes, [`sizes${mix}`] : ""
+                    
+    
+                }
+                
+            });
 
-           setSizes(filter);
-
-        } else {
-
-            sizes.push(e.target.value);
-            
         }
 
     }
 
-    const addPhoto = e => {
 
-        e.preventDefault();
-        const element = document.getElementById('categoryPhoto');
-        element.click();
+    const handleSizeChange = e => {
+
+        const {name, value} = e.target
+
+        setSizes( size => {
+
+            return {
+
+                ...size,
+                [name] : value
+
+            }
+
+        } )
+
 
     }
 
-    const uploading = async () => {
+    const handleDeleteSize = (key) => {
 
-        const storageRef = ref( storage, `categories / ${category.toLowerCase()} / merccreator_product_${fileMngt.name.toLowerCase()}` );
+        delete sizes[key];
+
+        setSizes(() => {
+
+            return {
+
+                ...sizes
     
-            //uploading to firebase begins
-            await uploadBytes(storageRef, fileMngt)
-            .then( async () => {
-                
-                await getDownloadURL(storageRef)
-                .then( url => {
-
-                        createProduct( {...data, photo : url } );
-
-                    } )
-                
-            });       
+            }
+        });
 
     }
 
-    const handleSubmit = (e) => {
+    const handleDeletePhoto = (key) => {
 
-        data.sizes = sizes;
+        delete urls[key];
 
-        if ( data.ProductName !== "" && data.displayName !== "" && fileMngt !== null, data.sizes.length !== 0 ) {
-            
-            //uploading();
+        setUrls(() => {
 
+            return {
 
-
-            const buttonSubmit = document.getElementById('buttonSubmit');
-            const buttonSubmit2 = document.getElementById('buttonSubmitCat');
-            buttonSubmit2.style.display = 'none';
-            buttonSubmit.style.display = 'flex';
-
-        }    
+                ...urls
+    
+            }
+        });
 
     }
 
     const handleModalBodyClose = (e) => {
 
-        closeModal();
+        closeMod();
 
         setData({
 
@@ -165,13 +192,95 @@ const EditProducts = ({createProduct, closeModal, category, dataProduct, puid, c
     
         })
 
-        setFileMngt(null)
+        setFileMngt([]);
 
     }
 
+
+    const uploading = async () => {
+
+        const photoUpload = {};
+
+        if (fileMngt.length) {
+            
+            for( let x = 0; x < fileMngt.length; x++ ) {
+
+                const keyNum = Math.floor(Math.random() * 999999999999 * (x+1)) + 1;
+    
+                const storageRef = ref( storage, `photos / products / merc_creator_product_${keyNum}` );
+        
+                //uploading to firebase begins
+                await uploadBytes(storageRef, fileMngt[x])
+                .then( async () => {
+                    
+                    await getDownloadURL(storageRef)
+                    .then( url => {
+    
+                            if( data.photo[keyNum] === undefined ){
+
+                                photoUpload[keyNum] = url;
+
+                            } else {
+
+                                const keyNum2 = Math.floor(Math.random() * 999999999999 * (x+1)) + 1;
+                                photoUpload[keyNum2] = url;
+
+                            }
+    
+                        } )
+                    
+                });   
+    
+            }
+        }
+
+       return photoUpload;
+
+    }
+    
+
+    const handleSubmit = (e) => {
+
+        e.preventDefault();
+
+        //setLoader(true);
+        
+        data.sizes = sizes;
+
+        uploading().then( e => {
+                
+                
+                axios.post(`${base_url}/api/v1/${cat}/product/${puid}/update`, { ...data, photo : { ...e, ...data.photo } })
+                .then( e => {
+
+                    if ( e.data.status ) {
+
+                        setTimeout(() => {
+
+                            setLoader(false);
+                            handleModalBodyClose();
+                            
+                        }, 1000);
+
+                    }
+
+                } )
+
+                .catch((e) => console.log(e));
+
+            })
+
+            const buttonSubmit = document.getElementById('buttonSubmit');
+            const buttonSubmit2 = document.getElementById('buttonSubmitCat');
+            buttonSubmit2.style.display = 'none';
+            buttonSubmit.style.display = 'flex';
+
+    }
+
+
     useEffect(() => {
 
-    }, [url]);
+    }, []);
 
 
     return (
@@ -184,7 +293,7 @@ const EditProducts = ({createProduct, closeModal, category, dataProduct, puid, c
 
                 <div className="p"> <strong>Update Product</strong> </div>
 
-                <form id='login_form' className='addProductForm'>
+                <form id='login_form' className='allForm addProductForm'>
 
                     {/* //distribute System 1 */}
 
@@ -214,41 +323,31 @@ const EditProducts = ({createProduct, closeModal, category, dataProduct, puid, c
 
                         <div className="formControl">
 
-                            <label> <i className="fi fi-rr-scale"></i> Available Sizes </label>
+                            <label> Available Sizes </label>
                             
-                            <div className="sizes-mx">
+                            <div className="sizesPanel">
 
-                                <div className="size-des">
-                                    
-                                    <p>S</p>
+                                <div className="sizeFillArea">
 
-                                    <input type = 'checkbox' name = "sizes" value= "s" onChange = {(e) => handleSizeAdd(e)} />
+                                    {
+                                        Object.keys(sizes).length ? Object.entries(sizes).map( (res, index) => {
 
-                                </div>
+                                            return <div className="sizeInput" key = {index} >
 
-                                <div className="size-des">
-                                    
-                                    <p>M</p>
+                                                <input type="text" placeholder={`Enter Size`} name = {res[0]} value = {res[1]} onChange={handleSizeChange} />
 
-                                    <input type= 'checkbox' name = "sizes" value= "m" onChange = {(e) => handleSizeAdd(e)} />
+                                                {
+                                                    index !== 0 ? <div className="rm_input" onClick={ () => handleDeleteSize(res[0]) } > x </div> : <div className="rm_input" > </div> 
+                                                }
 
-                                </div>
+                                            </div>
 
-                                <div className="size-des">
-                                    
-                                    <p>L</p>
-
-                                    <input type= 'checkbox' name = "sizes" value= "l" onChange = {(e) => handleSizeAdd(e)} />
+                                        } ) : null
+                                    }
 
                                 </div>
 
-                                <div className="size-des">
-                                    
-                                    <p>XL</p>
-
-                                    <input type= 'checkbox' name = "sizes" value= "xl" onChange = {(e) => handleSizeAdd(e)} />
-
-                                </div>
+                                <div className="sizesButton" onClick = { () => handleTheSizeAdding() }  > Add Size </div>
 
                             </div>
 
@@ -264,13 +363,54 @@ const EditProducts = ({createProduct, closeModal, category, dataProduct, puid, c
                         
                         <div className="formControl">
 
-                            <div className="previewImageXY">
-                                <img src={url} alt={url} />
+                            <label className='restP'> Product Photos</label>
+
+                            <div className="productPhotoBooth">
+
+                                {
+                                    Object.keys(urls).length ? Object.entries(urls).reverse().map( (url, index) => {
+
+                                        return (
+                                        
+                                        <div className="photoItem">
+
+                                            <div className="photoSrc" name = {url[0]} > 
+
+                                                <img src={url[1]} alt="product photos" /> 
+                                                <div className="rm_photo" onClick={ () => handleDeletePhoto(url[0]) } > x </div>
+
+                                            </div>
+                                                
+                                        </div>
+                                        
+                                        )
+
+                                    } ) : null
+                                }
+
+                                <div className="addPhoto" onClick={addPhoto}>+</div>
+
+                                <input type="file" name = "productimages" id = "productPhotos" onChange = {(e) => handleFileChange(e)} accept = 'image/*' hidden/>
+
                             </div>
+
+                            {/* <div className="previewImageXY">
+
+                                <img src={url} alt={url} />
+
+                            </div>
+
+                            <input type="file" id = "categoryPhoto" required value= "" onChange = {(e) => handleFileChange(e)} accept = 'image/*' hidden/>
+
+                            <div className="upload">
+
+                               lus Adding
+
+                            </div> */}
 
                         </div>
 
-                        <button className='BUTTON_submit' onClick={handleEditProduct} id='buttonSubmitCat' > + Update Product</button>
+                        <button className='BUTTON_submit' onClick={handleSubmit} id='buttonSubmitCat' > + Update Product</button>
 
                         <button className='BUTTON_submit btn_load' id='buttonSubmit' > 
                         

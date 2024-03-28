@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import EditCategory from './editCategory';
 import { useNavigate } from 'react-router-dom';
+import { serverlog } from '../../serverlog';
 
 const CategoryItem = ({data, deleteFunction, openEdit}) => {
 
@@ -11,7 +12,7 @@ const CategoryItem = ({data, deleteFunction, openEdit}) => {
 
     const [products, setProducts] = useState(0);
 
-    const base_url = "https://walrus-app-fbyvn.ondigitalocean.app"
+    const base_url = serverlog.baseUrl
 
     let navigate = useNavigate();
 
@@ -51,7 +52,7 @@ const CategoryItem = ({data, deleteFunction, openEdit}) => {
 
             <div className="image_category">
                 <img src={photo} alt="Merc Creator Category" />
-                <div className="editFunction" onClick={() => openEdit(id) } ><i className="fi fi-sr-pencil"></i> Edit Category Details</div>
+                <div className="editFunction" onClick={() => openEdit(id, { displayName, photo }) } ><i className="fi fi-sr-pencil"></i> Edit Details</div>
             </div>
 
             <div className="category_info">
