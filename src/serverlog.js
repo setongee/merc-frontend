@@ -1,7 +1,7 @@
 const server = {
 
     live : {
-        baseUrl : "https://walrus-app-fbyvn.ondigitalocean.app"
+        baseUrl : "https://starfish-app-l54sf.ondigitalocean.app"
     },
 
     test : {
@@ -10,6 +10,6 @@ const server = {
 
 }
 
-const serverlog = server.test
+const serverlog = server.live
 
 export { serverlog };
